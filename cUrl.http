@@ -1,0 +1,52 @@
+### Auth health check
+GET http://localhost:8081/health
+
+### User health check
+GET http://localhost:8082/health
+
+### Friend health check
+GET http://localhost:8083/health
+
+### Message health check
+GET http://localhost:8084/health
+
+# Auth Service (8081)
+### регистрация пользователя
+POST http://localhost:8081/auth/register
+
+### вход
+POST http://localhost:8081/auth/login
+
+# User Service (8082)
+### получение профиля
+GET http://localhost:8082/users/:id
+
+### обновление профиля
+PUT http://localhost:8082/users/:id
+
+### поиск пользователей
+GET http://localhost:8082/users/search
+
+# Friend Service (8083):
+### отправка запроса на дружбу
+POST http://localhost:8083/friends/request
+
+### принятие запроса
+PUT http://localhost:8083/friends/request/:id/accept
+
+### отклонение запроса
+PUT http://localhost:8083/friends/request/:id/reject
+
+### список друзей
+GET http://localhost:8083/friends
+
+### удаление из друзей
+DELETE http://localhost:8083/friends/:id
+
+# Message Service (8084):
+
+### отправка сообщения
+POST http://localhost:8084/messages
+
+### получение сообщений чата
+GET http://localhost:8084/messages/:chatId

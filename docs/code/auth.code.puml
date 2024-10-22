@@ -1,0 +1,16 @@
+@startuml
+class TokenManager {
+  - secretKey: []byte
+  + NewTokenManager(secretKey: []byte): TokenManager
+  + GenerateToken(userID: string, expiration: time.Duration): (string, error)
+  + ValidateToken(token: string): (string, error)
+  + RefreshToken(token: string): (string, error)
+}
+
+class JWT {
+  + Sign(claims: Claims, secretKey: []byte): (string, error)
+  + Verify(token: string, secretKey: []byte): (Claims, error)
+}
+
+TokenManager --> JWT : uses
+@enduml

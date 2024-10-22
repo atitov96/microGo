@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: messenger-stable
+    namespace: default
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: messenger
+            version: stable
+    template:
+        metadata:
+            labels:
+                app: messenger
+                version: stable
+        spec:
+            containers:
+                - name: messenger
+                  ports:
+                      - containerPort: 8080
+                  resources:
+                      requests:
+                          memory: "256Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "512Mi"
+                          cpu: "200m"
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: 8080
+                      initialDelaySeconds: 5
+                      periodSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: messenger-canary
+    namespace: default
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: messenger
+            version: canary
+    template:
+        metadata:
+            labels:
+                app: messenger
+                version: canary
+        spec:
+            containers:
+                - name: messenger
+                  ports:
+                      - containerPort: 8080
+                  resources:
+                      requests:
+                          memory: "256Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "512Mi"
+                          cpu: "200m"
+                  readinessProbe:
+                      httpGet:
+                          path: /health
+                          port: 8080
+                      initialDelaySeconds: 5
+                      periodSeconds: 10

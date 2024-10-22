@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+    name: messenger
+    namespace: default
+spec:
+    hosts:
+        - "*"
+    gateways:
+        - messenger-gateway
+    http:
+        - match:
+#              - uri:
+#                    prefix: "/canary"
+#                cookies:
+#                    x-canary:
+#                        regex: "true"
+              - headers:
+                    x-canary:
+                        exact: "true"
+          route:
+              - destination:
+                    host: messenger-canary
+                    port:
+                        number: 80
+        - route:
+              - destination:
+                    host: messenger-stable
+                    port:
+                        number: 80
+                weight: 90
+              - destination:
+                    host: messenger-canary
+                    port:
+                        number: 80
+                weight: 10

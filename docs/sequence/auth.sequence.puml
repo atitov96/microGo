@@ -1,0 +1,19 @@
+@startuml
+ actor User
+ participant "API Gateway" as AG
+ participant "Auth Service" as AS
+ participant "User Service" as US
+ database "Auth DB" as DB
+ participant "Token Manager" as TM
+
+ User -> AG: Login request
+ AG -> AS: Forward login request
+ AS -> DB: Verify credentials
+ DB --> AS: Credentials valid
+ AS -> TM: Generate token
+ TM --> AS: Token
+ AS -> US: Get user details
+ US --> AS: User details
+ AS --> AG: Login response with token and user details
+ AG --> User: Login successful
+ @enduml
