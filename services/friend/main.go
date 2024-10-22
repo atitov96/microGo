@@ -13,9 +13,7 @@ func main() {
 
 	friends := r.Group("/friends")
 	{
-		friends.POST("/request", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{"message": "send friend request"})
-		})
+		friends.POST("/request", sendFriendRequest)
 
 		friends.PUT("/request/:id/accept", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"message": "accept friend request"})
@@ -35,6 +33,22 @@ func main() {
 	}
 
 	r.Run(":8080")
+}
+
+func sendFriendRequest(c *gin.Context) {
+	var req struct {
+		ToUserID string `json:"to_user_id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// TODO: Implement actual friend request logic
+	c.JSON(http.StatusOK, gin.H{
+		"message":    "Friend request sent",
+		"to_user_id": req.ToUserID,
+	})
 }
 
 func readinessCheck(context *gin.Context) {

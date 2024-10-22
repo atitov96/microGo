@@ -17,9 +17,6 @@ POST http://localhost:8081/auth/register
 ### вход
 POST http://localhost:8081/auth/login
 
-### OAuth аутентификация
-POST http://localhost:8081/auth/oauth
-
 # User Service (8082)
 ### получение профиля
 GET http://localhost:8082/users/:id

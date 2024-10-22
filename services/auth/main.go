@@ -5,6 +5,17 @@ import (
 	"net/http"
 )
 
+type RegisterRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6"`
+	Nickname string `json:"nickname" binding:"required"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
 func main() {
 	r := gin.Default()
 
@@ -15,25 +26,38 @@ func main() {
 	{
 		auth.POST("/register", register)
 		auth.POST("/login", login)
-		auth.POST("/oauth", oauthLogin)
 	}
 
 	r.Run(":8080")
 }
 
-func oauthLogin(c *gin.Context) {
-	// TODO: Implement OAuth login
-	c.JSON(http.StatusOK, gin.H{"message": "oauth endpoint"})
+func register(c *gin.Context) {
+	var req RegisterRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// TODO: Implement actual registration logic
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "User registered successfully",
+		"email":    req.Email,
+		"nickname": req.Nickname,
+	})
 }
 
 func login(c *gin.Context) {
-	// TODO: Implement login
-	c.JSON(http.StatusOK, gin.H{"message": "login endpoint"})
-}
+	var req LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-func register(c *gin.Context) {
-	// TODO: Implement register
-	c.JSON(http.StatusOK, gin.H{"message": "register endpoint"})
+	// TODO: Implement actual login logic
+	c.JSON(http.StatusOK, gin.H{
+		"token": "dummy-jwt-token",
+		"email": req.Email,
+	})
 }
 
 func readinessCheck(context *gin.Context) {

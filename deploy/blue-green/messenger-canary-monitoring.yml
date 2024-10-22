@@ -1,0 +1,64 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+    name: messenger-monitoring
+spec:
+    hosts:
+        - messenger.example.com
+    http:
+        - match:
+              - headers:
+                    x-canary:
+                        exact: "true"
+          route:
+              - destination:
+                    host: messenger-canary
+          fault:
+              delay:
+                  percentage:
+                      value: 0.1
+                  fixedDelay: 5s
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: ServiceMonitor
+metadata:
+    name: messenger-canary
+    labels:
+        release: prometheus
+spec:
+    selector:
+        matchLabels:
+            app: messenger
+            version: v2
+    endpoints:
+        - port: http
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: PrometheusRule
+metadata:
+    name: messenger-canary-alerts
+spec:
+    groups:
+        - name: messenger.rules
+          rules:
+              - alert: HighErrorRate
+                expr: |
+                    sum(rate(http_requests_total{job="messenger-canary",code=~"5.."}[5m]))
+                    /
+                    sum(rate(http_requests_total{job="messenger-canary"}[5m])) > 0.1
+                for: 1m
+                labels:
+                    severity: critical
+                annotations:
+                    description: "High error rate in canary deployment"
+              - alert: HighLatency
+                expr: |
+                    histogram_quantile(0.95, 
+                      sum(rate(http_request_duration_seconds_bucket{job="messenger-canary"}[5m])) 
+                      by (le)
+                    ) > 0.5
+                for: 1m
+                labels:
+                    severity: warning
+                annotations:
+                    description: "High latency in canary deployment"
