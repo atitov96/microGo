@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(friend_service, "Friend Service") {
+    Component(friend_controller, "Friend Controller", "Go", "Handles friend requests")
+    Component(request_manager, "Request Manager", "Go", "Manages friend requests")
+    Component(relationship_manager, "Relationship Manager", "Go", "Manages friend relationships")
+    ComponentDb(friend_repo, "Friend Repository", "Go", "Manages friend data in PostgreSQL")
+}
+
+System_Ext(db, "Friend Database", "PostgreSQL + pgvector")
+System_Ext(event_bus, "Event Bus", "Kafka")
+System_Ext(user_service, "User Service", "Validates users")
+
+Rel(friend_controller, request_manager, "Uses")
+Rel(friend_controller, relationship_manager, "Uses")
+Rel(request_manager, friend_repo, "Uses")
+Rel(relationship_manager, friend_repo, "Uses")
+Rel(friend_repo, db, "Reads from and writes to")
+Rel(friend_controller, user_service, "Validates users through")
+Rel(request_manager, event_bus, "Publishes events to")
+
+@enduml

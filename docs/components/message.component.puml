@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(message_service, "Message Service") {
+    Component(message_controller, "Message Controller", "Go", "Handles message requests")
+    Component(chat_manager, "Chat Manager", "Go", "Manages chat sessions")
+    Component(message_handler, "Message Handler", "Go", "Processes messages")
+    ComponentDb(message_repo, "Message Repository", "Go", "Manages messages in ScyllaDB")
+}
+
+System_Ext(db, "Message Database", "ScyllaDB")
+System_Ext(event_bus, "Event Bus", "Kafka")
+System_Ext(friend_service, "Friend Service", "Validates friendship")
+
+Rel(message_controller, chat_manager, "Uses")
+Rel(message_controller, message_handler, "Uses")
+Rel(chat_manager, message_repo, "Uses")
+Rel(message_handler, message_repo, "Uses")
+Rel(message_repo, db, "Reads from and writes to")
+Rel(message_controller, friend_service, "Validates friendship through")
+Rel(message_handler, event_bus, "Publishes events to")
+
+@enduml

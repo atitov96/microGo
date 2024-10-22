@@ -1,0 +1,32 @@
+graph TD
+    Client[Client] --> AG[API Gateway]
+    AG --> AS[Auth Service]
+    AG --> US[User Service]
+    AG --> FS[Friend Service]
+    AG --> MS[Message Service]
+
+    AS <--> US
+    US <--> FS
+    US <--> MS
+    FS <--> MS
+
+    subgraph Databases
+        AuthDB[(Auth DB)]
+        UserDB[(User DB)]
+        FriendDB[(Friend DB)]
+        MessageDB[(Message DB)]
+    end
+
+    AS --> AuthDB[(Auth DB)]
+    US --> UserDB[(User DB)]
+    FS --> FriendDB[(Friend DB)]
+    MS --> MessageDB[(Message DB)]
+
+    subgraph Message Queue
+        MQ[Message Queue]
+    end
+
+    AS --> MQ
+    US --> MQ
+    FS --> MQ
+    MS --> MQ

@@ -1,0 +1,24 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container_Boundary(auth_service, "Auth Service") {
+    Component(auth_controller, "Auth Controller", "Go", "Handles authentication requests")
+    Component(token_manager, "Token Manager", "Go", "Manages JWT tokens")
+    Component(password_hasher, "Password Hasher", "Go", "Hashes and verifies passwords")
+    Component(oauth_provider, "OAuth Provider", "Go", "Handles OAuth authentication")
+    ComponentDb(user_repo, "User Repository", "Go", "Manages user data in the database")
+}
+
+System_Ext(db, "Auth Database", "PostgreSQL database")
+System_Ext(email_system, "Email System", "Sends emails")
+System_Ext(oauth_service, "External OAuth Service", "Provides OAuth authentication")
+
+Rel(auth_controller, token_manager, "Uses")
+Rel(auth_controller, password_hasher, "Uses")
+Rel(auth_controller, oauth_provider, "Uses")
+Rel(auth_controller, user_repo, "Uses")
+Rel(user_repo, db, "Reads from and writes to")
+Rel(auth_controller, email_system, "Sends emails using")
+Rel(oauth_provider, oauth_service, "Authenticates using")
+
+@enduml

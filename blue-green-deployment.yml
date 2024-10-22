@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messenger-blue
+  labels:
+      app: messenger
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: messenger
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: messenger
+        version: blue
+    spec:
+      containers:
+      - name: messenger
+        image: messenger:blue
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messenger-green
+  labels:
+      app: messenger
+spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: messenger
+        version: green
+    template:
+        metadata:
+          labels:
+              app: messenger
+              version: green
+        spec:
+          containers:
+          - name: messenger
+            image: messenger:green
+            ports:
+            - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: messenger-svc
+spec:
+    selector:
+        app: messenger
+        version: blue # or green
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+    type: LoadBalancer
