@@ -1,0 +1,25 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'slack'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'pager'
+      repeat_interval: 1h
+
+receivers:
+  - name: 'slack'
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/YOUR_SLACK_WEBHOOK'
+        channel: '#alerts'
+        send_resolved: true
+
+  - name: 'pager'
+    pagerduty_configs:
+      - service_key: 'YOUR_PAGERDUTY_KEY'

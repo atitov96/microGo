@@ -1,0 +1,155 @@
+openapi: 3.1.0
+info:
+    title: Friend Service API
+    description: Friend Service API
+    version: 1.0.0
+    license:
+        name: ISC
+        identifier: ISC
+servers:
+    -   url: 'http://localhost:8080'
+security:
+    - OAuth2: []
+paths:
+    /friends/request:
+        post:
+            operationId: sendFriendRequest
+            summary: Send friend request
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                toUserId:
+                                    type: string
+            responses:
+                '200':
+                    description: Friend request sent
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FriendRequest'
+                '400':
+                    description: Invalid request parameters
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+                '500':
+                    description: Internal server error
+
+    /friends/request/{id}/accept:
+        put:
+            operationId: acceptFriendRequest
+            summary: Accept friend request
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Friend request accepted
+                '400':
+                    description: Invalid request parameters
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+                '500':
+                    description: Internal server error
+
+    /friends/request/{id}/reject:
+        put:
+            operationId: rejectFriendRequest
+            summary: Reject friend request
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Friend request rejected
+                '400':
+                    description: Invalid request parameters
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+                '500':
+                    description: Internal server error
+
+    /friends:
+        get:
+            operationId: getFriendsList
+            summary: Get friends list
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                      type: integer
+                      default: 10
+                - name: offset
+                  in: query
+                  schema:
+                      type: integer
+                      default: 0
+            responses:
+                '200':
+                    description: List of friends
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Friend'
+                '400':
+                    description: Invalid request parameters
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+                '500':
+                    description: Internal server error
+
+components:
+    securitySchemes:
+        OAuth2:
+            type: oauth2
+            flows:
+                authorizationCode:
+                    authorizationUrl: http://localhost:8080/oauth2/authorize
+                    tokenUrl: http://localhost:8080/oauth2/token
+                    scopes: {}
+    schemas:
+        FriendRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                fromUserId:
+                    type: string
+                toUserId:
+                    type: string
+                status:
+                    type: string
+                    enum: [pending, accepted, rejected]
+                createdAt:
+                    type: string
+                    format: date-string
+
+        Friend:
+            type: object
+            properties:
+                id:
+                    type: string
+                nickname:
+                    type: string
+                avatar:
+                    type: string
+                friendSince:
+                    type: string
+                    format: date-string
