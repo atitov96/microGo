@@ -1,0 +1,211 @@
+{
+    "info": {
+        "name": "Микросервисы",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Checks",
+            "item": [
+                {
+                    "name": "Auth Health Check",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8081/health"
+                    }
+                },
+                {
+                    "name": "User Health Check", 
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8082/health"
+                    }
+                },
+                {
+                    "name": "Friend Health Check",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8083/health"
+                    }
+                },
+                {
+                    "name": "Message Health Check",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8084/health"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Auth Service",
+            "item": [
+                {
+                    "name": "Регистрация пользователя",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:8081/auth/register",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "email": "user@example.com",
+                                "password": "password123",
+                                "nickname": "username"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Вход",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:8081/auth/login",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "email": "user@example.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User Service",
+            "item": [
+                {
+                    "name": "Получение профиля",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8082/users/:id"
+                    }
+                },
+                {
+                    "name": "Обновление профиля",
+                    "request": {
+                        "method": "PUT",
+                        "url": "http://localhost:8082/users/:id",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "nickname": "new_nickname",
+                                "bio": "Новое описание",
+                                "avatar": "avatar_url"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Поиск пользователей",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8082/users/search",
+                        "query": [
+                            {
+                                "key": "query",
+                                "value": "поисковый_запрос"
+                            },
+                            {
+                                "key": "limit",
+                                "value": "10"
+                            },
+                            {
+                                "key": "offset",
+                                "value": "0"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Friend Service",
+            "item": [
+                {
+                    "name": "Отправка запроса на дружбу",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:8083/friends/request",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "to_user_id": "user_id"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Принятие запроса",
+                    "request": {
+                        "method": "PUT",
+                        "url": "http://localhost:8083/friends/request/:id/accept"
+                    }
+                },
+                {
+                    "name": "Отклонение запроса",
+                    "request": {
+                        "method": "PUT",
+                        "url": "http://localhost:8083/friends/request/:id/reject"
+                    }
+                },
+                {
+                    "name": "Список друзей",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8083/friends"
+                    }
+                },
+                {
+                    "name": "Удаление из друзей",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "http://localhost:8083/friends/:id"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Message Service",
+            "item": [
+                {
+                    "name": "Отправка сообщения",
+                    "request": {
+                        "method": "POST",
+                        "url": "http://localhost:8084/messages",
+                        "header": {
+                            "Content-Type": "application/json"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "to_user": "user_id",
+                                "content": "Текст сообщения"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Получение сообщений чата",
+                    "request": {
+                        "method": "GET",
+                        "url": "http://localhost:8084/messages/:chatId"
+                    }
+                }
+            ]
+        }
+    ]
+}
+

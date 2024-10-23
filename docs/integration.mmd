@@ -1,0 +1,28 @@
+flowchart TD
+    subgraph Sync ["Synchronous Communication"]
+        A[Auth Service]
+        U[User Service]
+        F[Friend Service]
+        M[Message Service]
+
+        A -->|Validate Token gRPC| U
+        A -->|Validate Token gRPC| F
+        A -->|Validate Token gRPC| M
+
+        U -->|Get User GraphQL| F
+        U -->|Get User GraphQL| M
+
+        F -->|Check Friendship REST| M
+    end
+
+    subgraph Async ["Asynchronous Communication"]
+        K[(Kafka)]
+
+        U -->|User Updated| K
+        F -->|Friend Status Changed| K
+        M -->|Message Sent| K
+
+        K -->|Update User Cache| F
+        K -->|Update User Cache| M
+        K -->|Send Notifications| U
+    end

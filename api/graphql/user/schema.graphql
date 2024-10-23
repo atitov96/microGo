@@ -1,0 +1,40 @@
+scalar DateTime
+scalar FileUpload
+
+type User {
+    id: ID!
+    email: String!
+    nickname: String!
+    bio: String
+    avatar: String
+    friends: [User!]
+    friendCount: Int!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Query {
+    user(id: ID!): User
+    searchUsers(query: String!, limit: Int = 10, offset: Int = 0): [User!]!
+    me: User
+}
+
+type Mutation {
+    updateProfile(input: UpdateProfileInput!): User!
+    uploadAvatar(file: FileUpload!): UploadResponse!
+}
+
+input UpdateProfileInput {
+    nickname: String
+    bio: String
+}
+
+type UploadResponse {
+    success: Boolean!
+    url: String
+    error: String
+}
+
+type Subscription {
+    userUpdated(id: ID!): User!
+}
